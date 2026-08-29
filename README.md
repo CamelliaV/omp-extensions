@@ -10,27 +10,44 @@ Personal [omp](https://github.com/can1357/oh-my-pi) runtime extensions, installa
 
 ## Install on another machine
 
+This repository is **private**, and bun resolves every `github.com` HTTPS or
+`github:` shorthand spec through the GitHub tarball API, which does not
+authenticate — those forms return 404 here. Use an SSH spec:
+
+```bash
+omp plugin install git@github.com:CamelliaV/omp-extensions.git
+```
+
+Prerequisite on the target machine: an SSH key registered with GitHub
+(`ssh -T git@github.com` must greet you). `gh auth setup-git` alone is not
+enough, because it only configures the HTTPS credential helper.
+
+Pin a ref instead of tracking the default branch:
+
+```bash
+omp plugin install "git+ssh://git@github.com/CamelliaV/omp-extensions.git#8750f4c"
+```
+
+If you make the repository public, the shorter form works with no credentials
+at all:
+
 ```bash
 omp plugin install github:CamelliaV/omp-extensions
 ```
 
-Pin a commit or tag instead of tracking the default branch:
-
-```bash
-omp plugin install github:CamelliaV/omp-extensions#v0.1.0
-```
-
-Then restart the session — extension modules are bound at startup, so
+Then restart the session — extension modules bind at startup, so
 `/reload-plugins` is not enough for a newly installed extension.
 
 Verify:
 
 ```bash
-omp plugin list          # camellia-omp-extensions, enabled
-omp plugin doctor        # loads every declared extension entry
+omp plugin list          # omp-ext-camellia, enabled
+omp plugin doctor        # manifest + on-disk entry check
 ```
 
-Inside a session, `/dsh-router-status` reports the router state.
+`omp plugin install` itself already imports every declared extension entry and
+fails the install if the factory throws, so a successful install is proof the
+module loads. Inside a session, `/dsh-router-status` reports the router state.
 
 Upgrade later:
 
@@ -44,15 +61,13 @@ Uninstall:
 omp plugin uninstall omp-ext-camellia
 ```
 
-### Private-repo note
+## This machine (source of truth)
 
-If this repository is private, the target machine needs git credentials before
-`omp plugin install` can clone it (installation runs `bun install <git spec>`):
-
-```bash
-gh auth login          # then: gh auth setup-git
-# or SSH: omp plugin install git@github.com:CamelliaV/omp-extensions.git
-```
+`~/.omp/agent/extensions/router-deepseek-dsh-spec.ts` is a symlink into this
+repository, so edits here are live in the next session and `git push` publishes
+them. Do **not** also `omp plugin install` on this machine: extension
+de-duplication is by absolute path, the symlink and the plugin copy resolve
+differently, and the router would load twice.
 
 ## Requirement: a DeepSeek V4 model must be reachable
 
