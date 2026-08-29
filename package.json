@@ -1,0 +1,15 @@
+{
+	"name": "omp-ext-camellia",
+	"version": "0.1.0",
+	"description": "Personal omp runtime extensions (DeepSeek V4 DSH router)",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/CamelliaV/omp-extensions.git"
+	},
+	"omp": {
+		"name": "camellia-omp-extensions",
+		"description": "DeepSeek V4 Pro/Flash first-turn anchoring router (DSH spec)",
+		"extensions": ["extensions/router-deepseek-dsh-spec.ts"]
+	}
+}

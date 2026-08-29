@@ -1,0 +1,34 @@
+# Shape only — merge into ~/.omp/agent/models.yml and supply your own apiKey.
+# The DSH router keys off the model id, not the provider name: any provider whose
+# model id (last "/" segment, lowercased) starts with `deepseek-v4-pro` or
+# `deepseek-v4-flash` activates it.
+providers:
+  my-relay:
+    baseUrl: https://example.invalid/v1
+    api: openai-completions
+    apiKey: sk-REPLACE-ME
+    models:
+      - id: deepseek-v4-flash
+        reasoning: true
+        input:
+          - text
+        contextWindow: 1000000
+        maxTokens: 128000
+      - id: deepseek-v4-pro
+        reasoning: true
+        input:
+          - text
+        contextWindow: 1000000
+        maxTokens: 128000
+
+  # Built-in catalog provider (credential from `omp` login) that only needs a
+  # metadata patch for an id missing from the bundled catalog:
+  nvidia:
+    modelOverrides:
+      deepseek-ai/deepseek-v4-pro-0813:
+        reasoning: true
+        thinking:
+          mode: effort
+          efforts: [low, high, max]
+        contextWindow: 1048576
+        maxTokens: 128000
