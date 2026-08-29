@@ -10,29 +10,25 @@ Personal [omp](https://github.com/can1357/oh-my-pi) runtime extensions, installa
 
 ## Install on another machine
 
-This repository is **private**, and bun resolves every `github.com` HTTPS or
-`github:` shorthand spec through the GitHub tarball API, which does not
-authenticate — those forms return 404 here. Use an SSH spec:
+```bash
+omp plugin install github:CamelliaV/omp-extensions
+```
+
+No credentials needed — the repository is public and bun resolves this through
+the GitHub tarball API. Pin a ref instead of tracking the default branch:
+
+```bash
+omp plugin install "github:CamelliaV/omp-extensions#<commit>"
+```
+
+If the repository is ever made private again, every `github.com` HTTPS and
+`github:` shorthand spec starts returning 404 — bun's tarball path never sends
+credentials, and `GITHUB_TOKEN` / `BUN_CONFIG_TOKEN` do not change that. Only an
+SSH spec clones, and it needs a key registered with GitHub
+(`gh auth setup-git` is not enough; it only configures the HTTPS helper):
 
 ```bash
 omp plugin install git@github.com:CamelliaV/omp-extensions.git
-```
-
-Prerequisite on the target machine: an SSH key registered with GitHub
-(`ssh -T git@github.com` must greet you). `gh auth setup-git` alone is not
-enough, because it only configures the HTTPS credential helper.
-
-Pin a ref instead of tracking the default branch:
-
-```bash
-omp plugin install "git+ssh://git@github.com/CamelliaV/omp-extensions.git#8750f4c"
-```
-
-If you make the repository public, the shorter form works with no credentials
-at all:
-
-```bash
-omp plugin install github:CamelliaV/omp-extensions
 ```
 
 Then restart the session — extension modules bind at startup, so
